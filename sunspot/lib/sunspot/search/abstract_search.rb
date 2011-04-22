@@ -47,7 +47,7 @@ module Sunspot
       # Sunspot#new_search(), you will need to call this method after building the
       # query.
       #
-      def execute
+      def execute opts={}
         reset
         params = @query.to_params
         @solr_result = @connection.post "#{request_handler}", :data => params
