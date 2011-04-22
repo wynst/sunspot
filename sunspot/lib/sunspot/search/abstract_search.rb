@@ -4,6 +4,14 @@ require 'sunspot/search/hit_enumerable'
 module Sunspot
   module Search #:nodoc:
     
+    #
+    # We need this class to encode the params Hash in a querystring
+    #
+    class Helper
+      include Singleton
+      include RSolr::Connection::Utils
+    end
+    
     # 
     # This class encapsulates the results of a Solr search. It provides access
     # to search results, total result count, facets, and pagination information.
