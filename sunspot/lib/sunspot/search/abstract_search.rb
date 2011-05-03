@@ -4,14 +4,6 @@ require 'sunspot/search/hit_enumerable'
 module Sunspot
   module Search #:nodoc:
     
-    #
-    # We need this class to encode the params Hash in a querystring
-    #
-    class Helper
-      include Singleton
-      include RSolr::Connection::Utils
-    end
-    
     # 
     # This class encapsulates the results of a Solr search. It provides access
     # to search results, total result count, facets, and pagination information.
@@ -47,10 +39,15 @@ module Sunspot
       # Sunspot#new_search(), you will need to call this method after building the
       # query.
       #
-      def execute opts={}
+      def execute
         reset
         params = @query.to_params
-        @solr_result = @connection.post "#{request_handler}", :data => params
+# <<<<<<< HEAD
+#         @solr_result = @connection.post "#{request_handler}", :data => params
+# =======
+#         @solr_result = @connection.request("/#{request_handler}", params, {:header => {'Content-Type' => 'application/x-www-form-urlencoded'}})
+# >>>>>>> Now we use ALWAYS POST for requests
+          @solr_result = @connection.post("#{request_handler}", :data => params, :header => {'Content-Type' => 'application/x-www-form-urlencoded'})
         self
       end
 
