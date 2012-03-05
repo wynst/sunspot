@@ -27,7 +27,9 @@ module Sunspot #:nodoc:
       end
 
       def build_session(configuration = self.configuration)
-        if configuration.has_master?
+        if configuration.disabled?
+          StubSessionProxy.new(Sunspot.session)
+        elsif configuration.has_master?
           SessionProxy::MasterSlaveSessionProxy.new(
             SessionProxy::ThreadLocalSessionProxy.new(master_config(configuration)),
             SessionProxy::ThreadLocalSessionProxy.new(slave_config(configuration))
@@ -46,6 +48,8 @@ module Sunspot #:nodoc:
           :port => sunspot_rails_configuration.master_port,
           :path => sunspot_rails_configuration.master_path
         ).to_s
+        config.solr.read_timeout = sunspot_rails_configuration.read_timeout
+        config.solr.open_timeout = sunspot_rails_configuration.open_timeout
         config
       end
 
@@ -56,6 +60,8 @@ module Sunspot #:nodoc:
           :port => sunspot_rails_configuration.port,
           :path => sunspot_rails_configuration.path
         ).to_s
+        config.solr.read_timeout = sunspot_rails_configuration.read_timeout
+        config.solr.open_timeout = sunspot_rails_configuration.open_timeout
         config
       end
     end
